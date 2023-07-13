@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <title>
+            <%= title %>
+        </title>
+    </head>
+    <body>
+
+        <%- include('_header'); %>
+
+        <%- body %> <!--this body is predefined in express-ejs-layouts as the variable part that is rendered based on diff routes-->
+
+        <%- include('_footer'); %>
+
+    </body>
+</html>
