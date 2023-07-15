@@ -3,6 +3,9 @@
         <title>
             <%= title %>
         </title>
+        <link rel="stylesheet" href="/css/layout.css"> <!--don't write assets/css/layout.css => bcz it already knows where are the assets, so mention what is the specific asset-->
+
+        <%- style %> <!--link tag from body is placed here-->
     </head>
     <body>
 
@@ -12,5 +15,6 @@
 
         <%- include('_footer'); %>
 
+        <%- script %> <!--script tag from body is placed here-->
     </body>
 </html>
