@@ -1,7 +1,7 @@
 module.exports.home = function(req, res){
     // return res.end('<h1>Express is up a for Codeial!</h1>');
-    console.log(req.cookies);
-    res.cookie('user_id', 25);
+    console.log(req.cookies); /* req.cookies to access all cookies */
+    res.cookie('user_id', 25); /* req.cookie to change particular cookie */
     return res.render('home', {
         title : "Home"
     })

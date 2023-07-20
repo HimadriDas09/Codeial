@@ -9,4 +9,7 @@ router.get('/profile', usersController.profile);
 router.get('/sign-up', usersController.signUp);
 router.get('/sign-in', usersController.signIn);
 
+/* from form data is sent to /users/create => so for that route : call the action to create a user && this route doesn't gets you anything : it just POST data to the server*/
+router.post('/create', usersController.create);
+
 module.exports = router;
