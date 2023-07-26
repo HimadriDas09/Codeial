@@ -101,9 +101,6 @@ module.exports.createSession = function(req, res) {
 }
 
 module.exports.signOut = function(req, res) {
-    //get the email from the url query
-    // let email = req.query.email;
-
     res.cookie('user_id', '');
     return res.redirect('/users/profile');
 }
