@@ -99,3 +99,11 @@ module.exports.createSession = function(req, res) {
         console.log('error in finding user in signing in'); return;
     })
 }
+
+module.exports.signOut = function(req, res) {
+    //get the email from the url query
+    // let email = req.query.email;
+
+    res.cookie('user_id', '');
+    return res.redirect('/users/profile');
+}
