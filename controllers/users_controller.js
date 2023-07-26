@@ -4,9 +4,28 @@ const User = require('../models/user');
 
 //userController.profile => contains below action
 module.exports.profile = function(req, res){
-    return res.render('user_profile', {
-        title : "Home"
-    });
+    /* if that user's auth is stored in cookies then open the profile page for the user else open the sign-in page */
+    if(req.cookies.user_id) {
+        User.findById(req.cookies.user_id)
+        .then((user) => {
+            if(user) {
+                return res.render('user_profile', {
+                    title : 'User Profile',
+                    user : user
+                })
+            }
+            else {
+                //user doesn't exists with that id
+                return res.redirect('/users/sign-in');
+            }
+        })
+        .catch((err) => {
+            console.log('error finding the user with specified id'); return;
+        })
+    }
+    else {
+        return res.redirect('/users/sign-in');
+    }
 }
 
 //render the sign up page
