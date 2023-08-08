@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-
 /* import the correct controller here */
 const usersController = require('../controllers/users_controller');
+const passport = require('passport');
 
 router.get('/profile', usersController.profile);
 
@@ -11,5 +11,12 @@ router.get('/sign-in', usersController.signIn);
 
 /* from form data is sent to /users/create => so for that route : call the action to create a user && this route doesn't gets you anything : it just POST data to the server*/
 router.post('/create', usersController.create);
+
+//create session > passport handles it
+//use passport as a middleware to authenticate
+router.post('/create-session', passport.authenticate(
+    'local', //strategy
+    {failureRedirect: '/users/sign-in'}//in case of can't autheticate : redirect here
+), usersController.createSession);
 
 module.exports = router;
