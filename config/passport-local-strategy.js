@@ -35,7 +35,7 @@ passport.serializeUser(function(user, done){
 })
 
 //deserializing the user from the key in the cookies
-//when a user comes in : we need to deserialize that which user is this
+//when a user comes in : we need to deserialize that which user is this && store the user in req.user to make it available throughout the lifecycle.
 passport.deserializeUser(function(id, done) {
     User.findById(id)
     .then((user) => {
@@ -47,5 +47,25 @@ passport.deserializeUser(function(id, done) {
     })
 
 })
+
+// below > just a middleware to check if the user is signed in or not
+// check if user is authenticated 
+passport.checkAuthentication = function(req, res, next) {
+    // if the user is signed in, then pass the request to the next function(controller's action)
+    if(req.isAuthenticated()) {
+        return next();
+    }
+
+    //if user is not signed in
+    return res.redirect('/users/sign-in');
+}
+
+passport.setAuthenticatedUser = function(req, res, next) {
+    if(req.isAuthenticated()) {
+        // req.user contains the current signed in user from the session cookie and we're just sending this to the locals for the views
+        res.locals.user = req.user;
+    }
+    next();
+}
 
 module.exports = passport;

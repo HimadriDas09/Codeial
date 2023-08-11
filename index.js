@@ -22,8 +22,6 @@ app.use(expressLayouts); /* mention that we're using express layouts before rout
 app.set('layout extractStyles', true);
 app.set('layout extractScripts', true);
 
-
-
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
@@ -42,6 +40,8 @@ app.use(session({
 //to app to use passport and passport session
 app.use(passport.initialize());
 app.use(passport.session());
+//stores the user's data in req into res.locals for the views to use it
+app.use(passport.setAuthenticatedUser);
 
 //use express router
 app.use('/', require('./routes'));
