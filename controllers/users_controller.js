@@ -66,5 +66,12 @@ module.exports.create = function(req, res) {
 //sign in and create a session for the user
 module.exports.createSession = function(req, res) {
     //no need to create a session bcz session is already created by passport itself
-    return res.redirect('/');
+    return res.redirect('/');//after authentication against the 'local' strategy in the routes, we're redirected to the home page
+}
+
+module.exports.destroySession = function(req, res) {
+    req.logout(function(err) {
+        if(err) console.log(err + 'in loggin out');
+    }); //passport provides this : for session removal & serialized user removal
+    return res.redirect('/'); 
 }

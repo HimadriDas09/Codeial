@@ -20,4 +20,6 @@ router.post('/create-session', passport.authenticate(
     {failureRedirect: '/users/sign-in'}//in case of can't autheticate : redirect here
 ), usersController.createSession);
 
+router.post('/sign-out', usersController.destroySession);
+
 module.exports = router;

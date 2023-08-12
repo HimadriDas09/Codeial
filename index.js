@@ -43,6 +43,8 @@ app.use(session({
     store: MongoStore.create({
         mongoUrl: process.env.DB_URI,
         autoRemove: 'disabled'
+    }, function(err) {
+        console.log(err || 'connect-mongo setup ok')
     })
 }));
 
