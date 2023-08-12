@@ -5,11 +5,15 @@ const app = express();
 const port = 8000;
 const expressLayouts = require('express-ejs-layouts');
 const db = require('./config/mongoose'); //require db
+const dotenv = require('dotenv');
+//set path to .env file
+dotenv.config({path: './.env'});
 
 //used for session cookie
 const session = require('express-session');
 const passport = require('passport');
 const passportLocal  = require('./config/passport-local-strategy');
+const MongoStore = require('connect-mongo');
 
 app.use(express.urlencoded()); //to parse form data into req.body
 app.use(cookieParser()); //to parse cookie data into req.cookie
@@ -34,7 +38,12 @@ app.use(session({
     resave: false,
     cookie: {
         maxAge: (1000 * 60 * 100)
-    }
+    },
+    //we're using mongoStore to store the session cookie in the db
+    store: MongoStore.create({
+        mongoUrl: process.env.DB_URI,
+        autoRemove: 'disabled'
+    })
 }));
 
 //to app to use passport and passport session
