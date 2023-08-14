@@ -10,7 +10,11 @@
                 </a>
             </li>
             <li>
-                <a href="/users/sign-out">Sign Out</a>
+                <a onclick="event.preventDefault(); document.getElementById('hidden-logout-form').submit()" style="cursor: pointer;">Sign Out</a>
+                
+                <form id="hidden-logout-form" action="/users/sign-out" method="POST" style="display: none;">
+
+                </form>
             </li>
         <% }else{ %> 
             <!-- null > display: sign_in and sign_up -->
