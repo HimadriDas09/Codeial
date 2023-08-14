@@ -8,6 +8,7 @@ const db = require('./config/mongoose'); //require db
 const dotenv = require('dotenv');
 //set path to .env file
 dotenv.config({path: './.env'});
+const path = require('path');
 
 //used for session cookie
 const session = require('express-session');
