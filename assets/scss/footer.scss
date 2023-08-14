@@ -1,0 +1,42 @@
+footer {
+    height: 10vh;
+    background-color: lightslategrey;
+    color: white;
+    position: relative;
+    display: flex;
+    
+    #footer-title {
+        font-size: small;
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        position: absolute;
+        left: 1vw;
+        bottom: 3vh;
+    }
+
+    #footer-nav {
+
+        ul {
+            position: absolute;
+            left: 30vw;
+            bottom: 3vh;
+            list-style-type: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+
+            li {
+                text-decoration: underline;
+                margin: 0 0.3rem 0 0.3rem;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                font-weight: lighter;
+                font-size: small;
+                a {
+                    text-decoration: none;
+                    color: inherit;
+                    cursor: pointer;
+                }
+            }
+        }
+
+    }
+}
