@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router(); // fn returns a router object
+const passport = require('passport');
 
 const postsController = require('../controllers/posts_controller');
 
-router.post('/create', postsController.create);
+/* keeping a check > user without beign authenticated i.e without beign signed in
+cannot create a post */
+router.post('/create', passport.checkAuthentication, postsController.create);
 
 module.exports = router;
