@@ -9,7 +9,14 @@ const postSchema = new mongoose.Schema({
         //user points to a document of a Collection 'User' having an ObjectId
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User'
-    }
+    },
+    // include the id of all the comments in this post schema itself
+    comments : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'Comment'
+        }
+    ]
 }, {
     timestamps : true
 });
