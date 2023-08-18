@@ -20,6 +20,17 @@
                         <small>
                             <%= post.user.name %>
                         </small>
+                        <div id="post-comments"> 
+                            <!-- show form(for posting comments) only to signed in user -->
+                            <% if(locals.user) { %>
+                                <form action="/comments/create" method="POST">
+                                    <input type="text" name="content" placeholder="Type here to add comments...">
+                                    <!--sending the post id as hidden value to the route-->
+                                    <input type="hidden" name="post" value="<%= post._id %>">
+                                    <input type="submit" value="Add comment">
+                                </form>
+                            <% } %>
+                        </div>
                     </p>
                 </li>
             <% } %>

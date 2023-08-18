@@ -6,7 +6,7 @@ module.exports.home = function(req, res){
     // console.log(req.cookies); /* req.cookies to access all cookies */
     // res.cookie('user_id', 25); /* req.cookie to change particular cookie */
 
-    //display all the posts by diff users
+    //display all the posts by diff users > using Post.find({}).populate('user') we're finding all documents in Post collection && then populating the user field with the Object to which it is ref (rather than just Object Ids) > using .exec() executing the entire query written before it
     Post.find({}).populate('user').exec()
     .then((posts) => {
         //from controller we send all the posts to view : home.ejs
