@@ -1,10 +1,11 @@
-<h1>Codeial/ <%= title %></h1>
+<h1><%= title %></h1>
 
 <section id="feed-posts">
     <% if(locals.user) {%>
-        <h4>Posts</h4>
+        <h3 style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Posts</h3>
         <form action="/posts/create" id="new-posts-form" method="POST">
-            <textarea name="content" cols="30" rows="3" placeholder="Type Here..." required></textarea>
+            <textarea name="content" cols="40" rows="2" id="post-textarea" placeholder="Type Here..." required></textarea>
+            <br>
             <input type="submit" value="Post">
         </form>    
     <% } %>
@@ -13,9 +14,9 @@
         <ul>
             <!-- queries posts are sent to home view(to be displayed) from homeController -->
             <% for(post of posts) {%>
-                <li>
+                <li class="post">
                     <p>
-                        <%= post.content %>
+                        <strong style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: medium;"><%= post.content %></strong>
                         <br>
                         <small>
                             <%= post.user.name %>
@@ -23,10 +24,11 @@
                         <div id="post-comments"> 
                             <!-- show form(for posting comments) only to signed in user -->
                             <% if(locals.user) { %>
-                                <form action="/comments/create" method="POST">
-                                    <input type="text" name="content" placeholder="Type here to add comments..." required>
+                                <form action="/comments/create" method="POST" id="comment-form">
+                                    <input type="text" name="content" placeholder="Type here to add comments..." required autocomplete="off">
                                     <!--sending the post id as hidden value to the route-->
                                     <input type="hidden" name="post" value="<%= post._id %>">
+                                    <br>
                                     <input type="submit" value="Add comment">
                                 </form>
                             <% } %>
@@ -35,7 +37,7 @@
                                 <ul id="post-comments-<%= post._id %>">
                                     <% for (comment of post.comments) {%>
                                         <p>
-                                            <%= comment.content %>
+                                            <strong style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: small;"><%= comment.content %></strong>
                                             <br>
                                             <small>
                                                 <%= comment.user.name %>
@@ -51,4 +53,17 @@
         </ul>
     </div>
 </section>
+
+<!--script tag for home page : for textarea-->
+<script>
+    const form = document.getElementById('new-posts-form');
+    const textarea = document.getElementById('post-textarea');
+
+    textarea.addEventListener('keydown', function(event) {
+        if(event.key == 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            form.submit();//submit the form when we click enter
+        }
+    });
+</script>
 
