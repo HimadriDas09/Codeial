@@ -7,7 +7,15 @@ module.exports.home = function(req, res){
     // res.cookie('user_id', 25); /* req.cookie to change particular cookie */
 
     //display all the posts by diff users > using Post.find({}).populate('user') we're finding all documents in Post collection && then populating the user field with the Object to which it is ref (rather than just Object Ids) > using .exec() executing the entire query written before it
-    Post.find({}).populate('user').exec()
+    Post.find({})
+    .populate('user')
+    .populate({
+        path: 'comments',
+        populate: {
+            path: 'user'
+        }
+    })// post > user : object , comments : [objects] > now within each comment obj > populate the user ==> now we can display the (content,user) of every comment since now we have access to them
+    .exec()
     .then((posts) => {
         //from controller we send all the posts to view : home.ejs
         return res.render('home', {

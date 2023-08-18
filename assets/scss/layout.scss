@@ -1,7 +1,10 @@
 body{
     margin: 0;
-    
+    /* text-align: center; */
+    position: relative;
+    width: 100%;
+
     #layout-main{
-        height: 100%;
+        min-height: 100vh; /* min ht would always be 100vh : this makes sure that footer also stays at the bottom always */
     }
 }

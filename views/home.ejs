@@ -4,7 +4,7 @@
     <% if(locals.user) {%>
         <h4>Posts</h4>
         <form action="/posts/create" id="new-posts-form" method="POST">
-            <textarea name="content" cols="30" rows="3" placeholder="Type Here..."></textarea>
+            <textarea name="content" cols="30" rows="3" placeholder="Type Here..." required></textarea>
             <input type="submit" value="Post">
         </form>    
     <% } %>
@@ -24,12 +24,26 @@
                             <!-- show form(for posting comments) only to signed in user -->
                             <% if(locals.user) { %>
                                 <form action="/comments/create" method="POST">
-                                    <input type="text" name="content" placeholder="Type here to add comments...">
+                                    <input type="text" name="content" placeholder="Type here to add comments..." required>
                                     <!--sending the post id as hidden value to the route-->
                                     <input type="hidden" name="post" value="<%= post._id %>">
                                     <input type="submit" value="Add comment">
                                 </form>
                             <% } %>
+
+                            <div class="post-comments-list">
+                                <ul id="post-comments-<%= post._id %>">
+                                    <% for (comment of post.comments) {%>
+                                        <p>
+                                            <%= comment.content %>
+                                            <br>
+                                            <small>
+                                                <%= comment.user.name %>
+                                            </small>
+                                        </p>
+                                    <%} %>
+                                </ul>
+                            </div>
                         </div>
                     </p>
                 </li>
