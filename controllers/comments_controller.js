@@ -37,12 +37,16 @@ module.exports.create = function(req, res) {
 
 module.exports.destroy = function(req, res) {
     // if comment id is valid 
-    Comment.findById(req.params.id) // bcz of :id in routes as var name
+    Comment.findById(req.params.id).populate('post').exec() // bcz of :id in routes as var name
     .then((comment) => {
         // a user can only delete his comment
-        if(comment.user == req.user.id){
+        // OR the user who created the post can also delete comments under his post 
+        // get the post id of comment > to see the user who made the post
+        let PostUserId = comment.post.user;
+
+        if(comment.user == req.user.id || PostUserId == req.user.id){
             // save the post id of the comment, so that after deleting the comment we can go to the post > search it's comments array and delete the id from there also
-            let postId = comment.post;
+            let postId = comment.post.id;
 
             // delete the comment object
             Comment.findByIdAndDelete(req.params.id)
@@ -67,6 +71,6 @@ module.exports.destroy = function(req, res) {
         }
     })
     .catch((err) => {
-        console.log('err in finding comment by its id');
+        console.log('err in finding the comment and populating its post');
     })
 }
