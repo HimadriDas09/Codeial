@@ -34,3 +34,39 @@ module.exports.create = function(req, res) {
         console.log('error in finding the post');
     })
 }
+
+module.exports.destroy = function(req, res) {
+    // if comment id is valid 
+    Comment.findById(req.params.id) // bcz of :id in routes as var name
+    .then((comment) => {
+        // a user can only delete his comment
+        if(comment.user == req.user.id){
+            // save the post id of the comment, so that after deleting the comment we can go to the post > search it's comments array and delete the id from there also
+            let postId = comment.post;
+
+            // delete the comment object
+            Comment.findByIdAndDelete(req.params.id)
+            .then((comment) => {
+                return res.redirect('back');
+            })
+            .catch((err) => {
+                console.log('err in deleting comment');
+            })
+
+            // update the post
+            Post.findByIdAndUpdate(postId, {
+                $pull: {comments: req.params.id}
+            })
+            .then((post) => {
+                return res.redirect('back');
+            })
+            .catch((err) => {console.log('err in updating the post after deleting comment');})
+        }
+        else {
+            return res.redirect('back');
+        }
+    })
+    .catch((err) => {
+        console.log('err in finding comment by its id');
+    })
+}

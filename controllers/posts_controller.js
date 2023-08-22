@@ -20,7 +20,7 @@ module.exports.create = function(req, res) {
 // deleting a post : getting post_id via req params
 module.exports.destroy = function(req, res) {
     // check if the post_id is even valid or not
-    Post.findById(req.params.id)
+    Post.findById(req.params.id) // id is the variable name in params in route
     .then((post) => {
         // I can only delete the post that I've made
         // req.user contains the current logged in user && .id converts the user id to string
