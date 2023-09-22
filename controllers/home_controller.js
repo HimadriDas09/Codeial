@@ -1,4 +1,5 @@
 const Post = require('../models/post');
+const User = require('../models/user');
 
 module.exports.home = function(req, res){
     // return res.end('<h1>Express is up a for Codeial!</h1>');
@@ -17,11 +18,20 @@ module.exports.home = function(req, res){
     })// post > user : object , comments : [objects] > now within each comment obj > populate the user ==> now we can display the (content,user) of every comment since now we have access to them
     .exec()
     .then((posts) => {
-        //from controller we send all the posts to view : home.ejs
-        return res.render('home', {
-            title : "Codeial | Home",
-            posts : posts
+        // we also want to display all the users in the home page
+        User.find({})
+        .then((users) => {
+            //from controller we send all the posts to view : home.ejs
+            return res.render('home', {
+                title : "Codeial | Home",
+                posts : posts,
+                all_users : users
+            })
         })
+        .catch((err) => {
+            console.log('cannot find all users for home page');
+        })
+        
     })
     .catch((err) => {
         console.log('err occured in finding posts');

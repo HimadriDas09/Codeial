@@ -4,9 +4,15 @@ const User = require('../models/user');
 
 //userController.profile => contains below action
 module.exports.profile = function(req, res){
-    return res.render('user_profile', {
-        title : "Home"
-    });
+    // bcz we're sending id of the user as query parameters
+    User.findById(req.params.id)
+    .then((user) => { 
+        return res.render('user_profile', {
+            title : "Home",
+            profile_user : user // to whichever user's profile we want to go to
+        });
+    })
+    .catch((err) => {console.log('error in finding user using id for profile page');})
 }
 
 //render the sign up page
