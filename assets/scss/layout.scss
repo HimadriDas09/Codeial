@@ -15,7 +15,7 @@ body{
     //how will the main page render
     #layout-main{
         min-height: 100vh; /* min ht would always be 100vh : this makes sure that footer also stays at the bottom always */
-        min-width: 40vw;
+        min-width: 55vw;
         @include flex-column-center;
         background-color: white;
         border-radius: 5px;
@@ -39,7 +39,7 @@ body{
             font-family: monospace;
             // font-weight: bold;
         }
-        textarea, input[type="text"]{
+        textarea, input[type="text"], input[type="email"], input[type="password"]{
             line-height: 2rem;
             border: 1px solid lightgrey;
             padding: 0 10px 0 10px;
