@@ -7,6 +7,8 @@ const passport = require('passport');
 // if the user is authenticated then only we can access the route /users/profile
 router.get('/profile/:id', passport.checkAuthentication, usersController.profile);
 
+router.post('/update/:id', passport.checkAuthentication, usersController.update);
+
 router.get('/sign-up', usersController.signUp);
 router.get('/sign-in', usersController.signIn);
 

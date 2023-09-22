@@ -15,6 +15,25 @@ module.exports.profile = function(req, res){
     .catch((err) => {console.log('error in finding user using id for profile page');})
 }
 
+module.exports.update = function(req, res) {
+    // check : if profile to update belongs to cur logged in user
+    if(req.user.id == req.params.id) {
+        // update the id
+        /* User.findByIdAndUpdate( which document to update, object contains fields you
+        want to change and their new values ) */
+        User.findByIdAndUpdate(req.params.id, req.body) 
+        .then((user) => {
+            // returns the udpated user
+            return res.redirect('back');
+        })
+        .catch((err) => {console.log('cannot update the document');})
+    }
+    else {
+        // http status code for unauthorized is 401
+        return res.status(401).send('Unauthorized');
+    }
+}
+
 //render the sign up page
 module.exports.signUp = function(req, res) {
     //user is already signed in > redirect to profile page
