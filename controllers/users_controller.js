@@ -2,6 +2,8 @@
 // const { userInfo } = require('os');
 const User = require('../models/user');
 
+// since no nesting of callbacks OR nested promise handling : so no need to async await
+
 //userController.profile => contains below action
 module.exports.profile = function(req, res){
     // bcz we're sending id of the user as query parameters

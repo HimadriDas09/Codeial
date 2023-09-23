@@ -5,40 +5,41 @@ const Post = require('../models/post');
 also since we created a comment under a post > so inside the post document of this post the comment id has to be added > so via the post_id get the post_document and add the id of the created comment inside the comment array */
 
 /* since we're sending the post id as hidden : user can fiddle with the id in inspect section and send the post : so to avoid further err : verify if the post_id sent is even valid or not */
-module.exports.create = function(req, res) {
-    Post.findById(req.body.post)
-    .then((post) => {
+module.exports.create = async function(req, res) {
+    try {
+        let post = await Post.findById(req.body.post)
+        
         if(post) {
             //post is not NULL : create a comment
-            Comment.create({
+            let comment = await Comment.create({
                 content: req.body.content,
                 post: req.body.post,
                 user: req.user._id
             })
-            .then((comment) => {
-                //add the comment id to the already created post document i.e UPDATING THE DB
-                post.comments.push(comment); //provided by mongoDB
-                post.save(); // before save it's only in RAM : after save() updated in DB
+            
+            //add the comment id to the already created post document i.e UPDATING THE DB
+            post.comments.push(comment); //provided by mongoDB
+            post.save(); // before save it's only in RAM : after save() updated in DB
 
-                return res.redirect('/');
-            })
-            .catch((err) => {
-                console.log('error in creating comment');
-            })
+            return res.redirect('/');
+            
         }
         else {
             return res.redirect('/');
         }
-    })
-    .catch((err) => {
-        console.log('error in finding the post');
-    })
+
+    } catch(err) {
+        console.log('Error', err);
+    }
+   
 }
 
-module.exports.destroy = function(req, res) {
-    // if comment id is valid 
-    Comment.findById(req.params.id).populate('post').exec() // bcz of :id in routes as var name
-    .then((comment) => {
+module.exports.destroy = async function(req, res) {
+    try {
+        // if comment id is valid 
+        let comment = await Comment.findById(req.params.id).populate('post')
+        // bcz of :id in routes as var name
+
         // a user can only delete his comment
         // OR the user who created the post can also delete comments under his post 
         // get the post id of comment > to see the user who made the post
@@ -49,28 +50,20 @@ module.exports.destroy = function(req, res) {
             let postId = comment.post.id;
 
             // delete the comment object
-            Comment.findByIdAndDelete(req.params.id)
-            .then((comment) => {
-                return res.redirect('back');
-            })
-            .catch((err) => {
-                console.log('err in deleting comment');
-            })
+            await Comment.findByIdAndDelete(req.params.id)
 
             // update the post
-            Post.findByIdAndUpdate(postId, {
+            await Post.findByIdAndUpdate(postId, {
                 $pull: {comments: req.params.id}
             })
-            .then((post) => {
-                return res.redirect('back');
-            })
-            .catch((err) => {console.log('err in updating the post after deleting comment');})
+            
+            return res.redirect('back');
         }
         else {
             return res.redirect('back');
         }
-    })
-    .catch((err) => {
-        console.log('err in finding the comment and populating its post');
-    })
+        
+    } catch(err) {
+        console.log('Error', err);
+    }
 }
