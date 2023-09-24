@@ -15,6 +15,8 @@ const session = require('express-session');
 const passport = require('passport');
 const passportLocal  = require('./config/passport-local-strategy');
 const MongoStore = require('connect-mongo');
+const flash = require('connect-flash'); /* flash messages is set up in cookies
+which stores the session information */
 
 app.use(express.urlencoded()); //to parse form data into req.body
 app.use(cookieParser()); //to parse cookie data into req.cookie
@@ -54,6 +56,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 //stores the user's data in req into res.locals for the views to use it
 app.use(passport.setAuthenticatedUser);
+
+app.use(flash());
 
 //use express router
 app.use('/', require('./routes'));
