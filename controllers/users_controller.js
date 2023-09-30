@@ -101,7 +101,7 @@ module.exports.destroySession = function(req, res) {
     req.logout(function(err) {
         if(err) console.log(err + 'in loggin out');
     }); //passport provides this : for session removal & serialized user removal
-
+    
     req.flash('success', 'You have logged out');
     return res.redirect('/'); 
 }
