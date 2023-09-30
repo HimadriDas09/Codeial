@@ -21,15 +21,18 @@ module.exports.create = async function(req, res) {
             post.comments.push(comment); //provided by mongoDB
             post.save(); // before save it's only in RAM : after save() updated in DB
 
+            req.flash('success', 'New comment added!');
             return res.redirect('/');
             
         }
         else {
+            req.flash('warning', 'you are not adding comment to a valid post!');
             return res.redirect('/');
         }
 
     } catch(err) {
-        console.log('Error', err);
+        req.flash('error', 'unable to post comment');
+        return res.redirect('back');
     }
    
 }
@@ -57,13 +60,16 @@ module.exports.destroy = async function(req, res) {
                 $pull: {comments: req.params.id}
             })
             
+            req.flash('success', 'Comment deleted successfully!')
             return res.redirect('back');
         }
         else {
+            req.flash('warning', 'You are not eligible to delete this comment');
             return res.redirect('back');
         }
         
     } catch(err) {
-        console.log('Error', err);
+        req.flash('error', err);
+        return res.redirect('back');
     }
 }

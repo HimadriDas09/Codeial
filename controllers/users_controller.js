@@ -26,11 +26,17 @@ module.exports.update = function(req, res) {
         User.findByIdAndUpdate(req.params.id, req.body) 
         .then((user) => {
             // returns the udpated user
+            req.flash('success', 'User details updated!');
             return res.redirect('back');
         })
-        .catch((err) => {console.log('cannot update the document');})
+        .catch((err) => {
+            console.log('cannot update the document');
+            req.flash('error', err);
+            return res.redict('back');
+        })
     }
     else {
+        req.flash('error', 'Unauthorized User!');
         // http status code for unauthorized is 401
         return res.status(401).send('Unauthorized');
     }
@@ -62,6 +68,7 @@ module.exports.signIn = function(req, res) {
 module.exports.create = function(req, res) {
     //if password and confirm_password are different then redirect back
     if(req.body.password != req.body.confirm_password) {
+        req.flash('warning', 'password and confirm password cannot be different!');
         return res.redirect('back');
     }
 
@@ -73,26 +80,29 @@ module.exports.create = function(req, res) {
             //User.create() also returns a promise now
             User.create(req.body)
             .then((user) => {
+                req.flash('success', 'New User Created!');
                 return res.redirect('/users/sign-in');
             })
             .catch((err) => {
                 console.log('error in creating user while signing up'); 
-                return;
+                req.flash('warning', err);
+                return res.redirect('back');
             })            
         }
         else {
+            req.flash('warning', 'This user already exists, kindly sign in');
             return res.redirect('back'); /* if user is already present then redirect to sign-up page : bcz user was in sign-up page */
         }
     })
     .catch((err) => {
-        console.log('error in finding user in signing up'); 
+        req.flash('error', 'Could not create user'); 
         return;
     })
 }
 
 //sign in and create a session for the user
 module.exports.createSession = function(req, res) {
-    req.flash('success', 'Logged in Successfully');
+    req.flash('success', req.user.name + ' Logged in Successfully');
     //no need to create a session bcz session is already created by passport itself
     return res.redirect('/');//after authentication against the 'local' strategy in the routes, we're redirected to the home page
 }
@@ -101,7 +111,7 @@ module.exports.destroySession = function(req, res) {
     req.logout(function(err) {
         if(err) console.log(err + 'in loggin out');
     }); //passport provides this : for session removal & serialized user removal
-
+    
     req.flash('success', 'You have logged out');
-    return res.redirect('/'); 
+    return res.redirect('back'); 
 }

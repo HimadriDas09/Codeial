@@ -9,10 +9,11 @@ module.exports.create = async function(req, res) {
             content : req.body.content,
             user : req.user.id 
         })
-
+        req.flash('success', 'New Post Created!');
         return res.redirect('back');
 
     } catch(err) {
+        req.flash('error', 'Could not create post');
         console.log('Error', err);
     }   
 }
@@ -31,12 +32,15 @@ module.exports.destroy = async function(req, res) {
             // now query comments based on post id and delete them
             await Comment.deleteMany({post: req.params.id})
             
+            req.flash('success', 'Post and associated comments deleted');
             return res.redirect('back');
         } 
         else {
+            req.flash('warning', 'you are not valid user to delete this post');
             return res.redirect('back');
         }
     } catch(err) {
-        console.log('Error', err);
+        req.flash('error', 'Could not delete post and associated comments');
+        return res.redirect('back');
     }
 }
