@@ -5,10 +5,23 @@ const Comment = require('../models/comment');
 module.exports.create = async function(req, res) {
     /* NOTE : since creating a post is in homepage && any user(not signed in) can also create a post > so we need to restrict that */
     try {
-        await Post.create({ 
+        let post = await Post.create({ 
             content : req.body.content,
             user : req.user.id 
         })
+
+        // send JSON data to client(bcz of the req being AJAX)
+        /* how to send JSON data ? > with a status code */
+        /* generally when we send JSON, we also sent a message in JSON */
+        if(req.xhr) {
+            return res.status(200).json({
+                data: {
+                    post: post
+                },
+                message: "Post Created!"
+            });
+        }
+
         req.flash('success', 'New Post Created!');
         return res.redirect('back');
 
