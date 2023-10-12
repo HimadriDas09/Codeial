@@ -20,15 +20,27 @@ module.exports.home = async function(req, res){
         });
         // post > user : object , comments : [objects] > now within each comment obj > populate the user ==> now we can display the (content,user) of every comment since now we have access to them
         
-            // we also want to display all the users in the home page
+        // we also want to display all the users in the home page
         let users = await User.find({});
     
-            //from controller we send all the posts to view : home.ejs
-        return res.render('home', {
-            title : "Codeial | Home",
-            posts : posts,
-            all_users : users
-        });
+        /* return all the posts, users as JSON to home_posts.js */
+        if(req.xhr) {
+            return res.status(200).json({
+                data: {
+                    posts: posts,
+                    all_users: users
+                },
+                message: "all posts displayed successfully! (AJAX)"
+            })
+        }
+        else {
+            // from controller we send all the posts to view : home.ejs
+            return res.render('home', {
+                title : "Codeial | Home",
+                posts : posts,
+                all_users : users
+            });
+        }
     
         //since app.set('views', './views') => so 'home' targets '../views/home.ejs' and we pass an object with key and values
     }

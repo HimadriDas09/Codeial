@@ -1,5 +1,63 @@
 // surrounding with {} just for scope
 {
+    /* 
+    WHY DO IT ? 
+    > bcz posts is accessible to views only > then how can I access every post here.
+    > get all posts via AJAX: then attach the onclick deletePost handler to X of each post: to delete every post via AJAX */
+    $.ajax({
+        type: 'get',
+        url: '/',
+        success: function(data) {
+            let posts = data.data.posts;
+                
+            // all posts to be deleted using AJAX:
+            // attach the click handler in deletePost(deleteLink i.e <a> delete button of each post) to delete button of all posts
+            for(post of posts) {
+                let parentElem = $(`#post-${post._id}`);
+                deletePost($(' .delete-post-button', parentElem));
+            }
+            // displayNotification("success", data.message);
+        },
+        error: function(err) {
+            displayNotification("error", err.responseText);
+        }
+    })
+
+
+    // write functions to display notification using NOTY
+    let displayNotification = function(type, message) {
+
+        console.log('displayNotification called!');
+        if(type == "success") {
+            console.log('notification for success called!');
+            new Noty({
+                theme: 'relax', 
+                text: message,
+                type: 'success',
+                layout: 'topRight',
+                timeout: 1500 // msec
+            }).show();
+        }
+        else if(type == "warning") {
+            new Noty({
+                theme: 'relax', 
+                text: message,
+                type: 'warning',
+                layout: 'topRight',
+                timeout: 1500 // msec
+            }).show();
+        }
+        else if(type == "error") {
+            new Noty({
+                theme: 'relax', 
+                text: message,
+                type: 'error',
+                layout: 'topRight',
+                timeout: 1500 // msec
+            }).show();
+        }
+    }
+
     // method to submit the form data for new post using AJAX
     let createPost = function() {
         let newPostForm = $('#new-posts-form');
@@ -20,9 +78,12 @@
 
                     // call deletePost(newly created Post) > attaches a handler to this elem > when clicked > deletion using AJAX is done.
                     deletePost($(' .delete-post-button', newPost)); // under newPost AJAX Obj fetch the obj whose class is .delete-post-button
+
+                    displayNotification("success", data.message);
                 },
                 error: function(err) {
                     console.log(err.responseText); 
+                    displayNotification("error", err.responseText);
                 }
             })
         })
@@ -73,6 +134,7 @@
     syntax: $(' .class_name', Obj) => within Obj get the obj with className = 'class_name'
     */
     let deletePost = function(deleteLink) {
+        console.log(`click handler to delete added to ${deleteLink}`);
         // deleteLink is the elem on which we're clicking
         $(deleteLink).click(function(e) {
             e.preventDefault(); // normal http req won't be sent to the server
@@ -82,12 +144,19 @@
                 type: 'get',
                 url: $(deleteLink).prop('href'),
                 success: function(data) {
-                    /* suppose: in server: elem is deleted from db and post obj of the elem is returned > so that this elem could be removed from DOM */
-                    // now delete this elem(elem with id: post-<%= post.id%>) from DOM
-                    $(`#post-${data.data.post_id}`).remove();
+                    if(data.data.post_id != null) {
+                        /* suppose: in server: elem is deleted from db and post obj of the elem is returned > so that this elem could be removed from DOM */
+                        // now delete this elem(elem with id: post-<%= post.id%>) from DOM
+                        $(`#post-${data.data.post_id}`).remove();
+                        displayNotification("success", data.message);
+                    }
+                    else {
+                        displayNotification("warning", data.message);
+                    }
                 },
                 error: function(err) {
                     console.log(err.responseText);
+                    displayNotification("error", err.responseText);
                 }
             })
         })

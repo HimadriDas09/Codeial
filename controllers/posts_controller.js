@@ -10,6 +10,9 @@ module.exports.create = async function(req, res) {
             user : req.user.id 
         })
 
+        post = await Post.findById(post._id).populate('user'); /* findById might take time, so we await > i.e when it returns post > then only we populate the user */
+        // OR > post = await post.populate('user')
+
         // send JSON data to client(bcz of the req being AJAX)
         /* how to send JSON data ? > with a status code */
         /* generally when we send JSON, we also sent a message in JSON */
@@ -18,7 +21,7 @@ module.exports.create = async function(req, res) {
                 data: {
                     post: post
                 },
-                message: "Post Created!"
+                message: "Post Created! (AJAX)"
             });
         }
 
@@ -26,6 +29,11 @@ module.exports.create = async function(req, res) {
         return res.redirect('back');
 
     } catch(err) {
+        if(req.xhr) {
+            return res.status(500).json({
+                message: 'Unable to create post (AJAX)'
+            })
+        }
         req.flash('error', 'Could not create post');
         console.log('Error', err);
     }   
@@ -51,18 +59,37 @@ module.exports.destroy = async function(req, res) {
                     data: {
                         post_id: req.params.id
                     },
-                    message: "Post deleted"
+                    message: "Post and associated comment deleted (AJAX)"
                 })
             }
             
+            // if req is xhr > control doesn't reach below
             req.flash('success', 'Post and associated comments deleted');
             return res.redirect('back');
         } 
         else {
+            // send post_id == null 
+            // when this is not valid user to delete this post
+            if(req.xhr) {
+                return res.status(401).json({
+                    data: {
+                        post_id: null
+                    },
+                    message: 'UnAuthorized User (AJAX)!'
+                })
+            }
+
             req.flash('warning', 'you are not valid user to delete this post');
             return res.redirect('back');
         }
     } catch(err) {
+        if(req.xhr) {
+            // 500 : internal server error
+            return res.status(500).json({
+                message: 'Could not delete post and associated comments (AJAX)'
+            })
+        }
+
         req.flash('error', 'Could not delete post and associated comments');
         return res.redirect('back');
     }
