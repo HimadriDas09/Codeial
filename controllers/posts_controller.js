@@ -44,6 +44,16 @@ module.exports.destroy = async function(req, res) {
 
             // now query comments based on post id and delete them
             await Comment.deleteMany({post: req.params.id})
+
+            // if req is an xhr request(i.e for AJAX), in JSON return the post id
+            if(req.xhr) {
+                return res.status(200).json({
+                    data: {
+                        post_id: req.params.id
+                    },
+                    message: "Post deleted"
+                })
+            }
             
             req.flash('success', 'Post and associated comments deleted');
             return res.redirect('back');

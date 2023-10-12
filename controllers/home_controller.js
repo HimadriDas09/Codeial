@@ -10,6 +10,7 @@ module.exports.home = async function(req, res){
     //display all the posts by diff users > using Post.find({}).populate('user') we're finding all documents in Post collection && then populating the user field with the Object to which it is ref (rather than just Object Ids) > using .exec() executing the entire query written before it
     try {
         let posts = await Post.find({})
+        .sort('-createdAt')
         .populate('user')
         .populate({
             path: 'comments',

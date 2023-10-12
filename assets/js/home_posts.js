@@ -17,6 +17,9 @@
                     let newPost = newPostDom(data.data.post);
                     // now prepend it to the list 
                     $('#posts-list-container > ul').prepend(newPost);
+
+                    // call deletePost(newly created Post) > attaches a handler to this elem > when clicked > deletion using AJAX is done.
+                    deletePost($(' .delete-post-button', newPost)); // under newPost AJAX Obj fetch the obj whose class is .delete-post-button
                 },
                 error: function(err) {
                     console.log(err.responseText); 
@@ -35,7 +38,7 @@
         return $(`<li class="post" id="post-${post._id}">
                     <p>
                         <small>
-                            <a class="delete-post-button" href="/posts/destroy/${post.id}"><i class="fa-solid fa-trash" style="color: #ff2424;"></i></a>
+                            <a class="delete-post-button" href="/posts/destroy/${post._id}"><i class="fa-solid fa-trash" style="color: #ff2424;"></i></a>
                         </small>
                         
                         
@@ -62,5 +65,36 @@
                 </li>`)
     }
 
+
+    // method to delete post from DOM
+
+    /* deleteLink is the <a> tag on which we're clicking to delete the post, whose href = /posts/destroy/<%= post.id %> 
+    => to pass this AJAX obj using jquery to the deletePost fn 
+    syntax: $(' .class_name', Obj) => within Obj get the obj with className = 'class_name'
+    */
+    let deletePost = function(deleteLink) {
+        // deleteLink is the elem on which we're clicking
+        $(deleteLink).click(function(e) {
+            e.preventDefault(); // normal http req won't be sent to the server
+            // rather an xhr req will be sent
+
+            $.ajax({
+                type: 'get',
+                url: $(deleteLink).prop('href'),
+                success: function(data) {
+                    /* suppose: in server: elem is deleted from db and post obj of the elem is returned > so that this elem could be removed from DOM */
+                    // now delete this elem(elem with id: post-<%= post.id%>) from DOM
+                    $(`#post-${data.data.post_id}`).remove();
+                },
+                error: function(err) {
+                    console.log(err.responseText);
+                }
+            })
+        })
+    }
+
+
     createPost();
+    // createPost() run only once and attach a click handler to createPost
+    // as many times as you submit the form: that many times the ajax req is sent
 }
