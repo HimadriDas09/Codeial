@@ -10,7 +10,7 @@ module.exports.create = async function(req, res) {
             user : req.user.id 
         })
 
-        post = await Post.findById(post._id).populate('user'); /* findById might take time, so we await > i.e when it returns post > then only we populate the user */
+        post = await post.populate('user'); /* findById might take time, so we await > i.e when it returns post > then only we populate the user */
         // OR > post = await post.populate('user')
 
         // send JSON data to client(bcz of the req being AJAX)
