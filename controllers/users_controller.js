@@ -1,6 +1,8 @@
 /* import the model here => to access db or make changes in it */
 // const { userInfo } = require('os');
 const User = require('../models/user');
+const fs = require('fs');
+const path = require('path');
 
 // since no nesting of callbacks OR nested promise handling : so no need to async await
 
@@ -34,7 +36,22 @@ module.exports.update = async function(req, res) {
 
                 // user may not upload a file
                 if(req.file) {
-                    // this is saving the path of the uploaded file into the avatar field of the user
+                    
+                    // delete prev user avatar > if present
+                    if(user.avatar) {
+                        // i.e in db > it's not null > i.e prev been updated > it contain the path to it 
+                        // but also check > if it's physically present or not else how will u delete it
+                        let delete_file_path = path.join(__dirname, '..', user.avatar);
+
+                        if(fs.existsSync(delete_file_path)) {
+                            // to delete it
+                            // if not present > then attempting to delete it causes error
+                            fs.unlinkSync(delete_file_path);    
+                        }
+                    }
+
+
+                    // this is saving the path of the uploaded file into the avatar field of the user document > i.e updating the user document
                     user.avatar = User.avatarPath + '/' + req.file.filename; 
                 }
                 user.save();
