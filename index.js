@@ -23,6 +23,9 @@ app.use(cookieParser()); //to parse cookie data into req.cookie
 
 app.use(express.static('./assets'));
 
+// make the upload paths available to the browser
+app.use('/uploads', express.static(__dirname + '/uploads')); /* on this route i.e /uploads, refer to this static folder "uploads" */
+
 app.use(expressLayouts); /* mention that we're using express layouts before routes => bcz it then renders (layout part + res.render()) part together and display it on the browser */
 
 /* to make it extract styles and scripts from subpages to the layouts */

@@ -17,23 +17,33 @@ module.exports.profile = function(req, res){
     .catch((err) => {console.log('error in finding user using id for profile page');})
 }
 
-module.exports.update = function(req, res) {
+module.exports.update = async function(req, res) {
     // check : if profile to update belongs to cur logged in user
     if(req.user.id == req.params.id) {
         // update the id
         /* User.findByIdAndUpdate( which document to update, object contains fields you
         want to change and their new values ) */
-        User.findByIdAndUpdate(req.params.id, req.body) 
-        .then((user) => {
-            // returns the udpated user
-            req.flash('success', 'User details updated!');
-            return res.redirect('back');
-        })
-        .catch((err) => {
-            console.log('cannot update the document');
+        try {
+            let user = await User.findById(req.params.id);
+            User.uploadedAvatar(req, res, function(err) {
+                if(err) {console.log('***** Multer Error: ', err)}
+
+                // console.log(req.file);
+                user.name = req.body.name; /* body-parser cannot parse multipart form data, but multer can > that's why we can access req.body.name */
+                user.email = req.body.email;
+
+                // user may not upload a file
+                if(req.file) {
+                    // this is saving the path of the uploaded file into the avatar field of the user
+                    user.avatar = User.avatarPath + '/' + req.file.filename; 
+                }
+                user.save();
+                return res.redirect('back');
+            })
+        }catch(err) {
             req.flash('error', err);
-            return res.redict('back');
-        })
+            return res.redirect('back');
+        }
     }
     else {
         req.flash('error', 'Unauthorized User!');

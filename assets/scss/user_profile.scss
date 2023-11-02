@@ -1,3 +1,17 @@
 body{
     background-color: lightblue;
+
+    img {
+        padding: 10px;
+        width: 120px;
+    }
+    #user-update-form {
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        
+        input {
+            margin: 2%;
+        }
+    }
 }
